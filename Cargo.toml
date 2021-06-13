@@ -5,5 +5,14 @@ authors = ["KyanCh <zgy.wiw@outlook.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+# set default feature
+default = ["user_define_feature","feature_with_values","conflict1"]
+user_define_feature =[]
+feature_with_values = []
+conflict1=[]
+conflict2=[]
 
 [dependencies]
+
+windows ={version="0.11.0",optional=true}
