@@ -1,4 +1,5 @@
 pub mod snake;
+mod render;
 
 #[cfg(test)]
 mod tests{

@@ -1,5 +1,3 @@
-use crate::demo::features::feature_test;
-
 mod design_pattern;
 mod collection;
 mod gaming;
