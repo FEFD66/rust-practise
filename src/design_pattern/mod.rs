@@ -5,7 +5,7 @@ mod singleton;
 #[cfg(test)]
 mod test{
     use crate::design_pattern::singleton::SingleConfig;
-    use std::thread::spawn;
+
     use std::thread;
 
     #[test]

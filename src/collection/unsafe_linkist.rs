@@ -1,4 +1,4 @@
-use std::ptr::{null, NonNull};
+use std::ptr::NonNull;
 
 pub struct UnsafeLinkedList<T>{
     head:Option<NonNull<Node<T>>>,

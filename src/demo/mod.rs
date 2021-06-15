@@ -1,4 +1,11 @@
-pub mod features;
+
+#[cfg(test)]
+ mod features;
+mod pointer;
+#[cfg(test)]
+mod lifetime;
+#[cfg(test)]
+mod union;
 
 #[cfg(test)]
 mod tests{

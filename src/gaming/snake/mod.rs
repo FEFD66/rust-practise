@@ -1,36 +1,27 @@
-
-use crate::gaming::render::{Render, GeneralRender};
-use std::thread::sleep;
-use std::time::Duration;
+use app::App;
 
 mod scene;
 mod snake;
+mod app;
 
-pub fn run(){
-    let r=Render::new();
-    r.clear();
-    for x in 0..15{
-        for y in 0..80{
-            r.draw((x,y),'@');
-            sleep(Duration::from_millis(100));
-        }
-    }
+pub fn run() {
+    let mut app =App::new();
+    app.init();
+    app.run();
 }
-#[cfg(test)]
-mod tests{
-    use crate::gaming::render::{Render, GeneralRender};
-    use std::thread::sleep;
-    use std::time::Duration;
 
-    #[test]
-    fn render(){
-        let r=Render::new();
-        r.clear();
-        for x in 0..20{
-            for y in 0..20{
-                r.draw((x,y),'@');
-                sleep(Duration::from_millis(2000));
-            }
-        }
-    }
-}
+// #[cfg(test)]
+// mod tests{
+//     use crate::gaming::render::{Render, GeneralRender};
+//     use crate::gaming::snake::snake::Snake;
+//     use crate::gaming::snake::scene::Scene;
+//
+//     #[test]
+//     fn draw_snake(){
+//         let r=Render::new();
+//         let s=Snake::new();
+//         let scene=Scene::new();
+//         scene.draw_wall(&r);
+//         s.draw(&r);
+//     }
+// }
