@@ -41,7 +41,7 @@ impl App {
         // self.snake.draw(&self.render);
     }
     pub fn run(&mut self) {
-        self.is_pause=false;
+        self.is_pause = false;
         let (tx, rx) = mpsc::channel();
         //启动 输入线程
         thread::spawn(move || handle_input(tx));
@@ -54,7 +54,7 @@ impl App {
                 //移动处理
                 let crash = self.scene.check(&mut self.snake);
                 if crash {
-                    self.is_finish=true;
+                    self.is_finish = true;
                     break;
                 }
                 self.snake.r#move();//

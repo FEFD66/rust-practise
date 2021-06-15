@@ -17,12 +17,12 @@ pub trait GeneralRender {
     fn get_termsize(&self) -> Point;
 }
 
-#[cfg(target_os = "windows")]
+#[cfg(windows)]
 pub type Render = windows_render::Render;
 #[cfg(target_os = "linux")]
 pub type Render = linux_render::Render;
 
-#[cfg(target_os = "windows")]
+#[cfg(windows)]
 mod windows_render {
     use crate::gaming::render::GeneralRender;
     use std::fmt::Display;
