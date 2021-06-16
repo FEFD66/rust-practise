@@ -14,6 +14,7 @@ conflict1=[]
 conflict2=[]
 
 [dependencies]
+rand = "0.8.4"
 
 [target.'cfg(windows)'.dependencies]
 windows_bindings = { path= "./windows_bindings"}

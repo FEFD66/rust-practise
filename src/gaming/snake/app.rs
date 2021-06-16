@@ -1,7 +1,7 @@
 use crate::gaming::snake::snake::{Direction, Snake};
 use std::sync::mpsc::{Sender, Receiver};
 use crate::gaming::render::{Render, GeneralRender};
-use crate::gaming::snake::scene::Scene;
+use crate::gaming::snake::scene::{Scene, CheckResult};
 use std::thread;
 use std::time::Duration;
 use std::sync::mpsc;
@@ -29,14 +29,14 @@ pub struct App {
 impl App {
     pub fn new() -> Self {
         App {
-            scene: Scene::with_fullsize(),
+            scene: Scene::with_size(10,10),
             snake: Snake::new(),
             render: Render::new(),
             is_pause: true,
             is_finish: false,
         }
     }
-    pub fn init(&self) {
+    pub fn init(& mut self) {
         self.scene.draw_wall(&self.render);
         // self.snake.draw(&self.render);
     }
@@ -47,21 +47,19 @@ impl App {
         thread::spawn(move || handle_input(tx));
 
         while !self.is_finish {
-            //第二层循环用来判断暂停
-            while !self.is_pause {
-                //输入处理
-                self.input(&rx);
-                //移动处理
-                let crash = self.scene.check(&mut self.snake);
-                if crash {
-                    self.is_finish = true;
-                    break;
-                }
-                self.snake.r#move();//
-                self.snake.draw(&self.render);
-                thread::sleep(Duration::from_millis(200));
+            //输入处理
+            self.input(&rx);
+            //场景处理
+            self.scene.draw(&self.render);
+            //移动处理
+            let crash = self.scene.check(&self.snake);
+            match crash{
+                CheckResult::None => {self.snake.r#move()}
+                CheckResult::Crash => {self.is_finish=true;break;}
+                CheckResult::Eat => {self.snake.eat()}
             }
-            thread::yield_now();
+            self.snake.draw(&self.render);
+            thread::sleep(Duration::from_millis(200));
         }
     }
     fn input(&mut self, recv: &Receiver<Signal>) {

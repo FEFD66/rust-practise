@@ -1,6 +1,5 @@
-
 #[cfg(test)]
- mod features;
+mod features;
 mod pointer;
 #[cfg(test)]
 mod lifetime;
@@ -8,11 +7,11 @@ mod lifetime;
 mod union;
 
 #[cfg(test)]
-mod tests{
-    use crate::demo::features::feature_test;
+mod tests {
+    use crate::core::features::feature_test;
 
     #[test]
-    fn features(){
+    fn features() {
         feature_test();
     }
 }

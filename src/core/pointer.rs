@@ -6,8 +6,7 @@ pub fn something(x:*mut u32){
 }
 #[cfg(test)]
 mod tests{
-    use crate::demo::features::feature_test;
-    use crate::demo::pointer::something;
+    use crate::core::pointer::something;
 
     #[test]
     fn pointer(){

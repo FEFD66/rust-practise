@@ -1,25 +1,75 @@
 use std::{u32, thread};
-use super::snake;
 use crate::gaming::snake::snake::Snake;
 use crate::gaming::render::{Render, GeneralRender, Point};
-use std::time::Duration;
+use crate::gaming::snake::scene::CheckResult::{Crash, Eat};
 
-pub struct Scene {
+use rand::prelude::*;
+use std::fs::read_to_string;
+
+pub enum CheckResult {
+    None,
+    Crash,
+    Eat,
+}
+
+pub struct Scene{
     height: u32,
     width: u32,
-    seed:Vec<Point>,
+    seeds: Point,
+    seed_update: bool
+}
+
+impl Scene{
+    pub fn check(&mut self,snake:&Snake) -> CheckResult {
+        let new = snake.next_pos();
+        if self.seed_consume(&new) {
+            self.seeds = self.generate_seeds(Some(snake));
+            self.seed_update = true;
+            Eat
+        } else if new.0 == 0 || new.0 == self.width || new.1 == 0 || new.1 == self.height || snake.self_cut() {
+            Crash
+        } else {
+            CheckResult::None
+        }
+    }
+    fn seed_consume(&mut self, place: &Point) -> bool {
+        &self.seeds == place
+    }
+    fn generate_seeds(&self,snake:Option<&Snake>) -> Point {
+        let mut rng = thread_rng();
+        let mut new;
+        loop {
+            let x = rng.gen_range(1..self.width);
+            let y = rng.gen_range(1..self.height);
+            new = (x, y);
+            if let Some(s) = snake {
+                if !s.contains(&new) {
+                    return new;
+                }
+            } else {
+                return new;
+            }
+        }
+    }
 }
 
 impl Scene {
-    pub fn step(&self){
+    pub fn new() -> Self {
+        Scene::with_size(10, 20)
+    }
+    pub fn with_size(height: u32, width: u32) -> Self {
+        let mut s = Scene { height: height - 1, width: width - 1, seeds: (0, 0), seed_update: true, };
+        s.seeds = s.generate_seeds(None);
+        s
+    }
+    pub fn with_fullsize() -> Self {
+        let render = Render::new();
+        let (width, height) = render.get_termsize();
+        Scene::with_size(height, width)
+    }
 
-    }
-    pub fn check(&self, snake: &mut Snake) -> bool {
-        let new = snake.next_pos();
-        new.0 == 0 || new.0 == self.width || new.1 == 0 || new.1 == self.height
-    }
     pub fn draw_wall(&self, render: &Render) {
-        let n = (self.width+1) as usize;
+        let n = (self.width + 1) as usize;
         let str = "#".repeat(n);
         render.draw(&(0, 0), &str);
         let ss = format!("{}{}{}", "#", " ".repeat(n - 2), "#");
@@ -29,18 +79,10 @@ impl Scene {
         }
         render.draw(&(0, self.height), &str);
     }
-}
 
-impl Scene {
-    pub fn new() -> Self {
-        Scene { height: 10, width: 80 ,seed:Vec::new()}
-    }
-    pub fn with_size(height: u32, width: u32) -> Self {
-        Scene { height, width ,seed:Vec::new()}
-    }
-    pub fn with_fullsize() -> Self {
-        let render = Render::new();
-        let (width, height) = render.get_termsize();
-        Scene { height:height-1, width: width-1,seed:Vec::new() }
+    pub fn draw(&mut self, render: &Render) {
+        if !self.seed_update { return; }
+        render.draw(&self.seeds, &'*');
+        self.seed_update = false;
     }
 }
