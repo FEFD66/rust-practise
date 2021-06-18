@@ -3,11 +3,10 @@ mod tests;
 
 #[cfg(target_os = "windows")]
 use std::fmt::Display;
-use std::ops::Index;
 
 pub type Point = (u32, u32);
 
-pub type Rect = (Point, Point);
+// pub type Rect = (Point, Point);
 
 pub trait GeneralRender {
     fn new() -> Self;
@@ -27,7 +26,6 @@ mod windows_render {
     use crate::gaming::render::GeneralRender;
     use std::fmt::Display;
     use windows_bindings::Windows::Win32::{System::Console::*, Foundation};
-    use windows_bindings::Windows::Win32::System::SystemServices::CHAR;
 
     pub struct Render {
         output: Foundation::HANDLE,
@@ -51,7 +49,8 @@ mod windows_render {
         fn draw<T: Display>(&self, p: &(u32, u32), c: &T) {
             unsafe {
                 let coord = COORD { X: p.0 as i16, Y: p.1 as i16 };
-                let bool: Foundation::BOOL = SetConsoleCursorPosition(self.output, coord);
+                let _: Foundation::BOOL = SetConsoleCursorPosition(self.output, coord);
+
             }
             eprint!("{}", c);
         }

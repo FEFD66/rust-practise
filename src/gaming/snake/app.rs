@@ -14,8 +14,7 @@ enum Signal {
 
 enum Command {
     Quit,
-    Pause,
-    Resume,
+    Pause
 }
 
 pub struct App {
@@ -29,7 +28,8 @@ pub struct App {
 impl App {
     pub fn new() -> Self {
         App {
-            scene: Scene::with_size(10,10),
+            // scene: Scene::with_size(10,10),
+            scene:Scene::with_fullsize(),
             snake: Snake::new(),
             render: Render::new(),
             is_pause: true,
@@ -78,10 +78,6 @@ impl App {
                             self.is_pause = !self.is_pause;
                             break;
                         }
-                        Command::Resume => {
-                            self.is_pause = false;
-                            break;
-                        }
                     }
                     Signal::None => {}
                 }
@@ -97,8 +93,9 @@ fn handle_input(sender: Sender<Signal>) {
     let x = Render::new();
     loop {
         let mut signal = Signal::None;
-        let mut need_send = true;
+        let mut need_send ;
         if let Ok(ch) = x.read_char() {
+            need_send = true;
             match ch {
                 'w' => signal = Signal::Dir(Direction::Up),
                 'a' => signal = Signal::Dir(Direction::Left),
@@ -111,7 +108,6 @@ fn handle_input(sender: Sender<Signal>) {
             if need_send {
                 sender.send(signal).unwrap();
             }
-            need_send = true;
         }
         thread::sleep(Duration::from_millis(100));
     }

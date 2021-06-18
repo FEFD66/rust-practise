@@ -5,6 +5,8 @@ mod pointer;
 mod lifetime;
 #[cfg(test)]
 mod union;
+#[cfg(test)]
+mod traits;
 
 #[cfg(test)]
 mod tests {

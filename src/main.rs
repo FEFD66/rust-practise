@@ -3,9 +3,10 @@
 use rand::{thread_rng, Rng};
 
 mod design_pattern;
-mod collection;
+mod data_structure;
 mod gaming;
 mod core;
+mod alg;
 
 fn main() {
     println!("Hello, world!");

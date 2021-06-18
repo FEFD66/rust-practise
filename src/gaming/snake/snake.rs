@@ -1,7 +1,6 @@
 use std::collections::LinkedList;
 
 use crate::gaming::render::{Point, GeneralRender, Render};
-use std::borrow::Borrow;
 use std::option::Option::Some;
 
 #[derive(PartialEq, Eq, Copy, Clone)]

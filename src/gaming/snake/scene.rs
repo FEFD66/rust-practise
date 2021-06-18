@@ -1,10 +1,8 @@
-use std::{u32, thread};
 use crate::gaming::snake::snake::Snake;
 use crate::gaming::render::{Render, GeneralRender, Point};
 use crate::gaming::snake::scene::CheckResult::{Crash, Eat};
 
 use rand::prelude::*;
-use std::fs::read_to_string;
 
 pub enum CheckResult {
     None,
@@ -54,6 +52,7 @@ impl Scene{
 }
 
 impl Scene {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Scene::with_size(10, 20)
     }
