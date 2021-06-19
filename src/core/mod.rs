@@ -7,6 +7,8 @@ mod lifetime;
 mod union;
 #[cfg(test)]
 mod traits;
+#[cfg(test)]
+mod test_serde;
 
 #[cfg(test)]
 mod tests {
