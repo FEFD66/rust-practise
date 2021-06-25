@@ -14,3 +14,4 @@
 - [RustDoc Book](https://doc.rust-lang.org/rustdoc/index.html)
 - [Rustc Book](https://doc.rust-lang.org/rustc/index.html)
 - [Compiler Error Index](https://doc.rust-lang.org/error-index.html)
+- [patterns](https://rust-unofficial.github.io/patterns)
