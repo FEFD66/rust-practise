@@ -9,6 +9,7 @@ mod union;
 mod traits;
 #[cfg(test)]
 mod test_serde;
+mod r#macro;
 
 #[cfg(test)]
 mod tests {

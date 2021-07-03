@@ -32,8 +32,8 @@ pub fn encode(data: &[u8]) -> String {
         buf[0]=MAP[val&0x3F];
         val=val>>6;
 
-        for i in buf{
-            res.push(i);
+        for i in buf.iter(){
+            res.push(i.clone());
         }
         i=i+3;
     }
