@@ -1,3 +1,52 @@
+use std::{net::TcpStream, io::{Read, Write}};
+
+pub struct PackReader{
+    pub stream:TcpStream,
+}
+impl PackReader {
+    pub fn new(stream:TcpStream)->Self{
+        PackReader { stream }
+    }
+    pub fn read_pack(&mut self)->Pack{
+        // 读取头
+        let need_len= self.read_head();
+        let mut data = Vec::with_capacity(need_len);
+        data.resize(need_len, 0);
+        let mut len = 0;
+        while len <need_len {
+            let n = self.stream.read(&mut data[len..]).unwrap();
+            len = len + n;
+        }
+        Pack { length: len as u32, data}
+    }
+    pub fn write_pack(&mut self,pack:Pack){
+        let buf:Vec<u8>=pack.into();
+        println!("@@@ write buf:{:?}",buf);
+        let mut len = 0;
+        while len != buf.len() {
+            let n = self.stream.write(& buf[len..]) .unwrap();
+            len = len + n;
+            println!("@@@ write length:{:?}/total:{}",n,len);
+        }
+    }
+    fn read_head(&mut self)->usize{
+        let mut buf = [0;4];
+        let mut n=0;
+        eprintln!("@@@{:?}",buf[n..].len());
+        while n<4 {
+            let n_1=self.stream.read(&mut buf[n..])
+                .expect("读取头错误");
+            n = n+n_1;
+            eprintln!("@@@ n:{},n_1:{}",n,n_1);
+        }
+        let mut len=0 as u32;
+        for i in 0..=3  {
+            len = (len<<8) +buf[i] as u32;
+        }
+        println!("@@@ len:{} buff:{:?}",len,buf);
+        len as usize
+    }
+}
 
 pub enum PackStatus{
     Full(u32), // return number of left in buffer
@@ -27,7 +76,7 @@ impl From<Pack> for Vec<u8> {
             v.push(x as u8 );
             len = len<<8;
         }
-        v.append(p.data.as_mut());
+        v.append(&mut p.data);
         v
     }
 }

@@ -1,7 +1,7 @@
 
-use std::{net::{SocketAddr, TcpListener, TcpStream}, thread, sync::mpsc, str::FromStr, io::{Read, Write, stdin}};
+use std::{net::{SocketAddr, TcpListener, TcpStream}, thread, sync::mpsc, str::FromStr, io::{Read, Write, stdin}, time::Duration};
 
-use crate::package::{Pack, Cmd};
+use crate::package::{Pack, Cmd, PackReader};
 
 
 pub fn server(){
@@ -24,35 +24,33 @@ pub fn server(){
     }
 }
 
-fn handle_connection (mut stream:TcpStream,send:mpsc::Sender<String>){
+fn handle_connection (stream:TcpStream,send:mpsc::Sender<String>){
+    let mut reader=PackReader::new(stream);
+    let mut str = [0;1024];
+    //reader.stream.set_read_timeout(Some(Duration::from_secs(1))).unwrap();
+
+    reader.stream.read(&mut str).unwrap();
+    eprintln!("@@@{}",String::from_utf8_lossy(&str));
     loop{
-        match read_pack(&mut stream).into(){
+        match reader.read_pack().into(){
             Cmd::Nop => continue,
             Cmd::Msg(info) => {
                 send.send(info).unwrap();
-                let response = "HTTP/1.1 200 OK\r\n\r\n";
-                stream.write(response.as_bytes()).unwrap();
-                stream.flush().unwrap();
             },
             Cmd::Quit => break,
         }
     }
 }
-fn read_pack(stream:&mut TcpStream)->Pack{
-    let mut buffer = [0 as u8;1024];
-    stream.read(&mut buffer).unwrap();
-    println!("@@@ buffer len: {}",buffer.len());
-    buffer.as_slice().into()
-}
 
 
 pub fn client(){
-    let mut tcp=TcpStream::connect("127.0.0.1:4000").unwrap();
+    let tcp=TcpStream::connect("127.0.0.1:4000").unwrap();
+    let mut pr=PackReader::new(tcp);
     println!("Connect Success");
+    pr.stream.write(String::from("Yes, It is!").as_bytes()).unwrap();
     loop {
         let mut line = String::new();
         stdin().read_line(&mut line).unwrap();
-        let v:Vec<u8> =Cmd::Msg(line).into();
-        tcp.write(v.as_slice()).unwrap();
+        pr.write_pack(Cmd::Msg(line).into());
     }
 }
