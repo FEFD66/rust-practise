@@ -8,7 +8,6 @@ use webserver::server;
 
 use crate::webserver::client;
 
-
 fn main(){
     println!("Hello world!");
     let args:Vec<String> = env::args().collect();
