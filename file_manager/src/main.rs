@@ -1,23 +1,24 @@
-use std::pin::Pin;
+use std::net::SocketAddr;
+
+use axum::{Router, routing::get, response::Html};
 
 mod filemanager;
 
-trait File{
-    fn poll(self:Pin<&mut Self>)->u32;
-}
-
-struct A{
-}
-
-fn main() {
+#[tokio::main]
+async fn main() {
     println!("Hello, world!");
-}
-fn a(a:&mut String){
-    let x=b(a);
-    *a=String::from("213");
-    println!("{}",x);
+    
+    let app = Router::new()
+        .route("/", get(root));
+
+    let addr = SocketAddr::from(([127,0,0,1],3000));
+    axum::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
 }
 
-fn b(a:& mut String)->&mut u8{
-    cout.operator<<()
+async fn root()->Html<String>{
+    Html::from("Hello".to_string())
 }
+
